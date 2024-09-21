@@ -26,6 +26,7 @@
     (type_declaration) @function.call)
 
 [
+    "const"
     "struct"
     "bitcast"
     "discard"
