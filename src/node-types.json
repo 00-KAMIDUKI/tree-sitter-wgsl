@@ -1332,6 +1332,7 @@
   {
     "type": "source_file",
     "named": true,
+    "root": true,
     "fields": {},
     "children": {
       "multiple": true,
@@ -1606,7 +1607,11 @@
           "named": true
         },
         {
-          "type": "type_declaration",
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "value_constructor",
           "named": true
         }
       ]
@@ -1693,6 +1698,41 @@
           }
         ]
       }
+    }
+  },
+  {
+    "type": "value_constructor",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "access_mode",
+          "named": true
+        },
+        {
+          "type": "address_space",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "int_literal",
+          "named": true
+        },
+        {
+          "type": "texel_format",
+          "named": true
+        },
+        {
+          "type": "type_declaration",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -2033,6 +2073,10 @@
     "named": false
   },
   {
+    "type": "atomic",
+    "named": false
+  },
+  {
     "type": "bitcast",
     "named": false
   },
@@ -2141,7 +2185,23 @@
     "named": false
   },
   {
+    "type": "mat2x2f",
+    "named": false
+  },
+  {
+    "type": "mat2x2h",
+    "named": false
+  },
+  {
     "type": "mat2x3",
+    "named": false
+  },
+  {
+    "type": "mat2x3f",
+    "named": false
+  },
+  {
+    "type": "mat2x3h",
     "named": false
   },
   {
@@ -2149,7 +2209,23 @@
     "named": false
   },
   {
+    "type": "mat2x4f",
+    "named": false
+  },
+  {
+    "type": "mat2x4h",
+    "named": false
+  },
+  {
     "type": "mat3x2",
+    "named": false
+  },
+  {
+    "type": "mat3x2f",
+    "named": false
+  },
+  {
+    "type": "mat3x2h",
     "named": false
   },
   {
@@ -2157,7 +2233,23 @@
     "named": false
   },
   {
+    "type": "mat3x3f",
+    "named": false
+  },
+  {
+    "type": "mat3x3h",
+    "named": false
+  },
+  {
     "type": "mat3x4",
+    "named": false
+  },
+  {
+    "type": "mat3x4f",
+    "named": false
+  },
+  {
+    "type": "mat3x4h",
     "named": false
   },
   {
@@ -2165,11 +2257,35 @@
     "named": false
   },
   {
+    "type": "mat4x2f",
+    "named": false
+  },
+  {
+    "type": "mat4x2h",
+    "named": false
+  },
+  {
     "type": "mat4x3",
     "named": false
   },
   {
+    "type": "mat4x3f",
+    "named": false
+  },
+  {
+    "type": "mat4x3h",
+    "named": false
+  },
+  {
     "type": "mat4x4",
+    "named": false
+  },
+  {
+    "type": "mat4x4f",
+    "named": false
+  },
+  {
+    "type": "mat4x4h",
     "named": false
   },
   {
@@ -2369,11 +2485,59 @@
     "named": false
   },
   {
+    "type": "vec2f",
+    "named": false
+  },
+  {
+    "type": "vec2h",
+    "named": false
+  },
+  {
+    "type": "vec2i",
+    "named": false
+  },
+  {
+    "type": "vec2u",
+    "named": false
+  },
+  {
     "type": "vec3",
     "named": false
   },
   {
+    "type": "vec3f",
+    "named": false
+  },
+  {
+    "type": "vec3h",
+    "named": false
+  },
+  {
+    "type": "vec3i",
+    "named": false
+  },
+  {
+    "type": "vec3u",
+    "named": false
+  },
+  {
     "type": "vec4",
+    "named": false
+  },
+  {
+    "type": "vec4f",
+    "named": false
+  },
+  {
+    "type": "vec4h",
+    "named": false
+  },
+  {
+    "type": "vec4i",
+    "named": false
+  },
+  {
+    "type": "vec4u",
     "named": false
   },
   {

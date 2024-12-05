@@ -1,4 +1,5 @@
 {
+  "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/grammar.schema.json",
   "name": "wgsl",
   "word": "identifier",
   "rules": {
@@ -1738,6 +1739,27 @@
         }
       ]
     },
+    "value_constructor": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_builtin_type"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_type_alias"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_composite_type"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_abstract_type"
+        }
+      ]
+    },
     "type_constructor_or_function_call_expression": {
       "type": "SEQ",
       "members": [
@@ -1746,15 +1768,11 @@
           "members": [
             {
               "type": "SYMBOL",
-              "name": "type_declaration"
+              "name": "value_constructor"
             },
             {
               "type": "SYMBOL",
-              "name": "_vec_prefix"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "_mat_prefix"
+              "name": "identifier"
             }
           ]
         },
@@ -1764,7 +1782,7 @@
         }
       ]
     },
-    "type_declaration": {
+    "_builtin_type": {
       "type": "CHOICE",
       "members": [
         {
@@ -1786,34 +1804,152 @@
         {
           "type": "STRING",
           "value": "f16"
+        }
+      ]
+    },
+    "_type_alias": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "vec2i"
         },
+        {
+          "type": "STRING",
+          "value": "vec3i"
+        },
+        {
+          "type": "STRING",
+          "value": "vec4i"
+        },
+        {
+          "type": "STRING",
+          "value": "vec2u"
+        },
+        {
+          "type": "STRING",
+          "value": "vec3u"
+        },
+        {
+          "type": "STRING",
+          "value": "vec4u"
+        },
+        {
+          "type": "STRING",
+          "value": "vec2f"
+        },
+        {
+          "type": "STRING",
+          "value": "vec3f"
+        },
+        {
+          "type": "STRING",
+          "value": "vec4f"
+        },
+        {
+          "type": "STRING",
+          "value": "vec2h"
+        },
+        {
+          "type": "STRING",
+          "value": "vec3h"
+        },
+        {
+          "type": "STRING",
+          "value": "vec4h"
+        },
+        {
+          "type": "STRING",
+          "value": "mat2x2f"
+        },
+        {
+          "type": "STRING",
+          "value": "mat2x3f"
+        },
+        {
+          "type": "STRING",
+          "value": "mat2x4f"
+        },
+        {
+          "type": "STRING",
+          "value": "mat3x2f"
+        },
+        {
+          "type": "STRING",
+          "value": "mat3x3f"
+        },
+        {
+          "type": "STRING",
+          "value": "mat3x4f"
+        },
+        {
+          "type": "STRING",
+          "value": "mat4x2f"
+        },
+        {
+          "type": "STRING",
+          "value": "mat4x3f"
+        },
+        {
+          "type": "STRING",
+          "value": "mat4x4f"
+        },
+        {
+          "type": "STRING",
+          "value": "mat2x2h"
+        },
+        {
+          "type": "STRING",
+          "value": "mat2x3h"
+        },
+        {
+          "type": "STRING",
+          "value": "mat2x4h"
+        },
+        {
+          "type": "STRING",
+          "value": "mat3x2h"
+        },
+        {
+          "type": "STRING",
+          "value": "mat3x3h"
+        },
+        {
+          "type": "STRING",
+          "value": "mat3x4h"
+        },
+        {
+          "type": "STRING",
+          "value": "mat4x2h"
+        },
+        {
+          "type": "STRING",
+          "value": "mat4x3h"
+        },
+        {
+          "type": "STRING",
+          "value": "mat4x4h"
+        }
+      ]
+    },
+    "_composite_type": {
+      "type": "CHOICE",
+      "members": [
         {
           "type": "SEQ",
           "members": [
             {
-              "type": "SYMBOL",
-              "name": "_vec_prefix"
-            },
-            {
-              "type": "STRING",
-              "value": "<"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "type_declaration"
-            },
-            {
-              "type": "STRING",
-              "value": ">"
-            }
-          ]
-        },
-        {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "_mat_prefix"
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "_abstract_type"
+                },
+                {
+                  "type": "STRING",
+                  "value": "atomic"
+                }
+              ]
             },
             {
               "type": "STRING",
@@ -2339,6 +2475,23 @@
               "value": ">"
             }
           ]
+        }
+      ]
+    },
+    "type_declaration": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_builtin_type"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_type_alias"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_composite_type"
         },
         {
           "type": "SYMBOL",
@@ -2401,6 +2554,19 @@
         {
           "type": "STRING",
           "value": "mat4x4"
+        }
+      ]
+    },
+    "_abstract_type": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_vec_prefix"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_mat_prefix"
         }
       ]
     },

@@ -44,13 +44,13 @@ Please note that both the WebGPU and WGSL spec are still under development.
 2. Add the following snippet to your config file:
 
    ```lua
-   vim.filetype.add({extension = {wgsl = "wgsl"}})
+   vim.filetype.add { extension = { wgsl = "wgsl" }}
    
    local parser_config = require "nvim-treesitter.parsers".get_parser_configs()
    parser_config.wgsl = {
        install_info = {
-           url = "https://github.com/szebniok/tree-sitter-wgsl",
-           files = {"src/parser.c"}
+           url = "https://github.com/00-KAMIDUKI/tree-sitter-wgsl",
+           files = { "src/parser.c", "src/scanner.c" }
        },
    }
    

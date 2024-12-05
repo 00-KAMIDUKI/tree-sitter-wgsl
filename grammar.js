@@ -309,19 +309,67 @@ module.exports = grammar({
 
     parenthesized_expression: $ => seq("(", $._expression, ")"),
 
+    value_constructor: $ => choice(
+      $._builtin_type,
+      $._type_alias,
+      $._composite_type,
+      $._abstract_type,
+    ),
+
     type_constructor_or_function_call_expression: $ => seq(
-      choice($.type_declaration, $._vec_prefix, $._mat_prefix),
+      choice(
+        $.value_constructor,
+        $.identifier,
+      ),
       $.argument_list_expression
     ),
 
-    type_declaration: $ => choice(
+    _builtin_type: _ => choice(
       "bool",
       "u32",
       "i32",
       "f32",
       "f16",
-      seq($._vec_prefix, "<", $.type_declaration, ">"),
-      seq($._mat_prefix, "<", $.type_declaration, ">"),
+    ),
+
+    _type_alias: _ => choice(
+      "vec2i",
+      "vec3i",
+      "vec4i",
+      "vec2u",
+      "vec3u",
+      "vec4u",
+      "vec2f",
+      "vec3f",
+      "vec4f",
+      "vec2h",
+      "vec3h",
+      "vec4h",
+      "mat2x2f",
+      "mat2x3f",
+      "mat2x4f",
+      "mat3x2f",
+      "mat3x3f",
+      "mat3x4f",
+      "mat4x2f",
+      "mat4x3f",
+      "mat4x4f",
+      "mat2x2h",
+      "mat2x3h",
+      "mat2x4h",
+      "mat3x2h",
+      "mat3x3h",
+      "mat3x4h",
+      "mat4x2h",
+      "mat4x3h",
+      "mat4x4h",
+    ),
+
+    _composite_type: $ => choice(
+      seq(choice(
+        $._abstract_type,
+        "atomic"
+      ), "<", $.type_declaration, ">"),
       seq(
         "array",
         "<",
@@ -340,12 +388,34 @@ module.exports = grammar({
       ...["1d", "2d", "2d_array", "3d"]
         .map(s => "texture_storage_" + s)
         .map(t => seq(t, "<", $.texel_format, ",", $.access_mode, ">")),
+    ),
+
+    type_declaration: $ => choice(
+      $._builtin_type,
+      $._type_alias,
+      $._composite_type,
       $.identifier,
     ),
 
-    _vec_prefix: $ => choice(...[2, 3, 4].map(n => "vec" + n)),
+    _vec_prefix: _ => choice(
+      "vec2",
+      "vec3",
+      "vec4",
+    ),
 
-    _mat_prefix: $ => choice(...cartesianProduct([2, 3, 4], [2, 3, 4]).map(([n, m]) => `mat${n}x${m}`)),
+    _mat_prefix: $ => choice(
+      "mat2x2",
+      "mat2x3",
+      "mat2x4",
+      "mat3x2",
+      "mat3x3",
+      "mat3x4",
+      "mat4x2",
+      "mat4x3",
+      "mat4x4",
+    ),
+
+    _abstract_type: $ => choice($._vec_prefix, $._mat_prefix),
 
     texel_format: $ => choice(
       ...["unorm", "snorm", "uint", "sint"].map(s => "rgba8" + s),

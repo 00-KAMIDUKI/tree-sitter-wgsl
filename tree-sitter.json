@@ -1,0 +1,38 @@
+{
+  "grammars": [
+    {
+      "name": "wgsl",
+      "camelcase": "Wgsl",
+      "scope": "source.wgsl",
+      "path": ".",
+      "file-types": [
+        "wgsl"
+      ],
+      "highlights": [
+        "queries/highlights.scm"
+      ],
+      "injection-regex": "wgsl"
+    }
+  ],
+  "metadata": {
+    "version": "0.1.0",
+    "license": "MIT",
+    "description": "",
+    "authors": [
+      {
+        "name": "Konrad Bochnia"
+      }
+    ],
+    "links": {
+      "repository": "https://github.com/tree-sitter/tree-sitter-wgsl"
+    }
+  },
+  "bindings": {
+    "c": true,
+    "go": true,
+    "node": true,
+    "python": true,
+    "rust": true,
+    "swift": true
+  }
+}
