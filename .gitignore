@@ -9,3 +9,4 @@ build
 target
 .ccls-cache
 Cargo.lock
+bun.lock

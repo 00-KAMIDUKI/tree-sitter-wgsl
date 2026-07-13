@@ -318,6 +318,11 @@
     "fields": {}
   },
   {
+    "type": "builtin_type",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "case_compound_statement",
     "named": true,
     "fields": {},
@@ -398,6 +403,45 @@
       "types": [
         {
           "type": "const_literal",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "composite_type",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "access_mode",
+          "named": true
+        },
+        {
+          "type": "address_space",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "int_literal",
+          "named": true
+        },
+        {
+          "type": "texel_format",
+          "named": true
+        },
+        {
+          "type": "type_declaration",
           "named": true
         }
       ]
@@ -528,29 +572,6 @@
         },
         {
           "type": "while_statement",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "const_expression",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "const_expression",
-          "named": true
-        },
-        {
-          "type": "const_literal",
-          "named": true
-        },
-        {
-          "type": "type_declaration",
           "named": true
         }
       ]
@@ -916,10 +937,6 @@
           "named": true
         },
         {
-          "type": "const_expression",
-          "named": true
-        },
-        {
           "type": "const_literal",
           "named": true
         },
@@ -963,7 +980,39 @@
           "named": true
         },
         {
-          "type": "const_expression",
+          "type": "binary_expression",
+          "named": true
+        },
+        {
+          "type": "bitcast_expression",
+          "named": true
+        },
+        {
+          "type": "composite_value_decomposition_expression",
+          "named": true
+        },
+        {
+          "type": "const_literal",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "parenthesized_expression",
+          "named": true
+        },
+        {
+          "type": "subscript_expression",
+          "named": true
+        },
+        {
+          "type": "type_constructor_or_function_call_expression",
+          "named": true
+        },
+        {
+          "type": "unary_expression",
           "named": true
         },
         {
@@ -1622,31 +1671,19 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": true,
-      "required": false,
+      "multiple": false,
+      "required": true,
       "types": [
         {
-          "type": "access_mode",
+          "type": "builtin_type",
           "named": true
         },
         {
-          "type": "address_space",
+          "type": "composite_type",
           "named": true
         },
         {
           "type": "identifier",
-          "named": true
-        },
-        {
-          "type": "int_literal",
-          "named": true
-        },
-        {
-          "type": "texel_format",
-          "named": true
-        },
-        {
-          "type": "type_declaration",
           "named": true
         }
       ]
@@ -1705,31 +1742,15 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": true,
+      "multiple": false,
       "required": false,
       "types": [
         {
-          "type": "access_mode",
+          "type": "builtin_type",
           "named": true
         },
         {
-          "type": "address_space",
-          "named": true
-        },
-        {
-          "type": "identifier",
-          "named": true
-        },
-        {
-          "type": "int_literal",
-          "named": true
-        },
-        {
-          "type": "texel_format",
-          "named": true
-        },
-        {
-          "type": "type_declaration",
+          "type": "composite_type",
           "named": true
         }
       ]
@@ -2082,7 +2103,8 @@
   },
   {
     "type": "block_comment",
-    "named": true
+    "named": true,
+    "extra": true
   },
   {
     "type": "bool",
@@ -2153,6 +2175,10 @@
     "named": false
   },
   {
+    "type": "handle",
+    "named": false
+  },
+  {
     "type": "i32",
     "named": false
   },
@@ -2174,7 +2200,8 @@
   },
   {
     "type": "line_comment",
-    "named": true
+    "named": true,
+    "extra": true
   },
   {
     "type": "loop",

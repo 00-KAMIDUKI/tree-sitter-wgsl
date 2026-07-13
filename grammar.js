@@ -1,3 +1,5 @@
+/// <reference types="tree-sitter-cli/dsl" />
+// @ts-check
 const PREC = {
   OR: 1,
   AND: 2,
@@ -12,7 +14,7 @@ const PREC = {
   UNARY: 11
 }
 
-module.exports = grammar({
+export default grammar({
   name: "wgsl",
 
   word: $ => $.identifier,
@@ -31,7 +33,7 @@ module.exports = grammar({
   rules: {
     source_file: $ => seq(repeat($.enable_directive), repeat($._declaration)),
 
-    line_comment: $ => token(seq('//', /.*/)),
+    line_comment: _ => token(seq('//', /.*/)),
 
     _declaration: $ => choice(
       ";",
@@ -43,27 +45,17 @@ module.exports = grammar({
     ),
 
     global_variable_declaration: $ => seq(
-      repeat($.attribute), $.variable_declaration, optional(seq("=", $.const_expression))
+      repeat($.attribute), $.variable_declaration, optional(seq("=", $._expression))
     ),
 
     global_constant_declaration: $ => choice(
-      seq(choice("let", "const"), choice($.identifier, $.variable_identifier_declaration), "=", $.const_expression),
+      seq("const", optional(choice($.identifier, $.variable_identifier_declaration)), "=", $._expression),
       seq(repeat($.attribute), "override", choice($.identifier, $.variable_identifier_declaration), optional(seq("=", $._expression)))
-    ),
-
-    const_expresssion: $ => choice(
-      seq($.type_declaration, "(", optional(seq(repeat(seq($.const_expression, ",")), $.const_expression, optional(","))), ")"),
-      $.const_literal
     ),
 
     type_alias_declaration: $ => seq(
       "type", $.identifier, "=", $.type_declaration
     ),
-
-    const_expression: $ => prec.left(choice(
-      seq($.type_declaration, "(", optional(seq(repeat(seq($.const_expression, ",")), $.const_expression, optional(","))), ")"),
-      $.const_literal,
-    )),
 
     function_declaration: $ => seq(
       repeat($.attribute),
@@ -117,7 +109,7 @@ module.exports = grammar({
       $.identifier,
     ),
 
-    identifier: $ => /([a-zA-Z_][0-9a-zA-Z][0-9a-zA-Z_]*)|([a-zA-Z][0-9a-zA-Z_]*)/,
+    identifier: _ => /([a-zA-Z_][0-9a-zA-Z][0-9a-zA-Z_]*)|([a-zA-Z][0-9a-zA-Z_]*)/,
 
     parameter_list: $ => seq(
       repeat(
@@ -160,7 +152,7 @@ module.exports = grammar({
       seq(field("left", "_"), "=", field("right", $._expression))
     ),
 
-    compound_assignment_operator: $ => choice(...["+", "-", "*", "/", "%", "&", "|", "^"].map(op => `${op}=`)),
+    compound_assignment_operator: _ => choice(...["+", "-", "*", "/", "%", "&", "|", "^"].map(op => `${op}=`)),
 
     if_statement: $ => seq(
       "if",
@@ -187,17 +179,22 @@ module.exports = grammar({
       seq("default", optional(":"), $.case_compound_statement)
     ),
 
-    case_selectors: $ => seq(
+    _case_label: $ => choice(
       $.const_literal,
-      repeat(seq(",", $.const_literal)),
-      optional(",")
+      $.identifier,
+    ),
+
+    case_selectors: $ => seq(
+      $._case_label,
+      repeat(seq(",", $._case_label)),
+      optional(seq(",", "default"))
     ),
 
     case_compound_statement: $ => seq(
       "{", repeat($._statement), optional($.fallthrough_statement), "}"
     ),
 
-    fallthrough_statement: $ => seq("fallthrough", ";"),
+    fallthrough_statement: _ => seq("fallthrough", ";"),
 
     loop_statement: $ => seq(
       "loop", "{", repeat($._statement), optional($.continuing_statement), "}"
@@ -234,11 +231,11 @@ module.exports = grammar({
       "while", field("condition", $._expression), $.compound_statement
     ),
 
-    break_statement: $ => seq("break", ";"),
+    break_statement: _ => seq("break", ";"),
 
     break_if_statement: $ => seq("break", "if", $._expression, ";"),
 
-    continue_statement: $ => seq("continue", ";"),
+    continue_statement: _ => seq("continue", ";"),
 
     continuing_statement: $ => seq("continuing", $.continuing_compound_statement),
 
@@ -248,12 +245,12 @@ module.exports = grammar({
 
     return_statement: $ => seq("return", optional($._expression)),
 
-    discard_statement: $ => seq("discard", ";"),
+    discard_statement: _ => seq("discard", ";"),
 
     variable_statement: $ => choice(
       $.variable_declaration,
       seq($.variable_declaration, "=", $._expression),
-      seq("let", choice($.identifier, $.variable_identifier_declaration), "=", $._expression,)
+      seq(choice("let", "const"), choice($.identifier, $.variable_identifier_declaration), "=", $._expression,)
     ),
 
     variable_declaration: $ =>
@@ -276,8 +273,6 @@ module.exports = grammar({
 
     decrement_statement: $ => seq($.lhs_expression, "--"),
 
-
-
     // EXPRESSIONS
 
     _expression: $ => choice(
@@ -298,22 +293,22 @@ module.exports = grammar({
       $.bool_literal,
     ),
 
-    int_literal: $ => /(-?0[xX][0-9a-fA-F]+|0|-?[1-9][0-9]*)[iu]?/,
+    int_literal: _ => /(-?0[xX][0-9a-fA-F]+|0|-?[1-9][0-9]*)[iu]?/,
 
-    float_literal: $ => choice(
+    float_literal: _ => choice(
       /(-?(([0-9]*\.[0-9]+|[0-9]+\.[0-9]*)([eE](\+|-)?[0-9]+)?)|([0-9]+[eE](\+|-)?[0-9]+))f?|0f|-?[1-9][0-9]*f/,
       /-?0[xX]((([0-9a-fA-F]*\.[0-9a-fA-F]+|[0-9a-fA-F]+\.[0-9a-fA-F]*)([pP](\+|-)?[0-9]+f?)?)|([0-9a-fA-F]+[pP](\+|-)?[0-9]+f?))/
     ),
 
-    bool_literal: $ => choice("true", "false"),
+    bool_literal: _ => choice("true", "false"),
 
     parenthesized_expression: $ => seq("(", $._expression, ")"),
 
     value_constructor: $ => choice(
-      $._builtin_type,
-      $._type_alias,
-      $._composite_type,
+      $.builtin_type,
+      $.composite_type,
       $._abstract_type,
+      "array",
     ),
 
     type_constructor_or_function_call_expression: $ => seq(
@@ -324,15 +319,12 @@ module.exports = grammar({
       $.argument_list_expression
     ),
 
-    _builtin_type: _ => choice(
+    builtin_type: _ => choice(
       "bool",
       "u32",
       "i32",
       "f32",
       "f16",
-    ),
-
-    _type_alias: _ => choice(
       "vec2i",
       "vec3i",
       "vec4i",
@@ -365,7 +357,7 @@ module.exports = grammar({
       "mat4x4h",
     ),
 
-    _composite_type: $ => choice(
+    composite_type: $ => choice(
       seq(choice(
         $._abstract_type,
         "atomic"
@@ -391,9 +383,8 @@ module.exports = grammar({
     ),
 
     type_declaration: $ => choice(
-      $._builtin_type,
-      $._type_alias,
-      $._composite_type,
+      $.builtin_type,
+      $.composite_type,
       $.identifier,
     ),
 
@@ -403,7 +394,7 @@ module.exports = grammar({
       "vec4",
     ),
 
-    _mat_prefix: $ => choice(
+    _mat_prefix: _ => choice(
       "mat2x2",
       "mat2x3",
       "mat2x4",
@@ -417,14 +408,14 @@ module.exports = grammar({
 
     _abstract_type: $ => choice($._vec_prefix, $._mat_prefix),
 
-    texel_format: $ => choice(
+    texel_format: _ => choice(
       ...["unorm", "snorm", "uint", "sint"].map(s => "rgba8" + s),
       ...cartesianProduct(["rgba16", "r32", "rg32", "rgba32"], ["uint", "sint", "float"]).map(([t, s]) => t + s)
     ),
 
-    address_space: $ => choice("function", "private", "workgroup", "uniform", "storage"),
+    address_space: _ => choice("function", "private", "workgroup", "uniform", "storage", "handle"),
 
-    access_mode: $ => choice("read", "write", "read_write"),
+    access_mode: _ => choice("read", "write", "read_write"),
 
     argument_list_expression: $ => seq(
       "(",
@@ -449,25 +440,25 @@ module.exports = grammar({
 
     binary_expression: $ => choice(
       ...[
-        ["||", PREC.OR],
-        ["&&", PREC.AND],
-        ["|", PREC.BIT_OR],
-        ["^", PREC.BIT_XOR],
-        ["&", PREC.BIT_AND],
-        ["==", PREC.EQ],
-        ["!=", PREC.EQ],
-        ["<", PREC.CMP],
-        [">", PREC.CMP],
-        ["<=", PREC.CMP],
-        [">=", PREC.CMP],
-        ["<<", PREC.SHIFT],
-        [">>", PREC.SHIFT],
-        ["+", PREC.ADD],
-        ["-", PREC.ADD],
-        ["*", PREC.MUL],
-        ["/", PREC.MUL],
-        ["%", PREC.MUL],
-      ].map(([op, p]) => prec.left(p, seq(field("left", $._expression), op, field("right", $._expression)))),
+        { op: "||", p: PREC.OR },
+        { op: "&&", p: PREC.AND },
+        { op: "|", p: PREC.BIT_OR },
+        { op: "^", p: PREC.BIT_XOR },
+        { op: "&", p: PREC.BIT_AND },
+        { op: "==", p: PREC.EQ },
+        { op: "!=", p: PREC.EQ },
+        { op: "<", p: PREC.CMP },
+        { op: ">", p: PREC.CMP },
+        { op: "<=", p: PREC.CMP },
+        { op: ">=", p: PREC.CMP },
+        { op: "<<", p: PREC.SHIFT },
+        { op: ">>", p: PREC.SHIFT },
+        { op: "+", p: PREC.ADD },
+        { op: "-", p: PREC.ADD },
+        { op: "*", p: PREC.MUL },
+        { op: "/", p: PREC.MUL },
+        { op: "%", p: PREC.MUL },
+      ].map(({ op, p }) => prec.left(p, seq(field("left", $._expression), op, field("right", $._expression)))),
     ),
 
     unary_expression: $ => prec.left(PREC.UNARY,
@@ -504,11 +495,19 @@ module.exports = grammar({
   }
 })
 
+/**
+ * @param {GrammarSymbols<"source_file" | "line_comment" | "_declaration" | "global_variable_declaration" | "global_constant_declaration" | "type_alias_declaration" | "function_declaration" | "function_return_type_declaration" | "struct_declaration" | "struct_member" | "enable_directive" | "attribute" | "_literal_or_identifier" | "identifier" | "parameter_list" | "parameter" | "_statement" | "compound_statement" | "assignment_statement" | "compound_assignment_operator" | "if_statement" | "else_statement" | "switch_statement" | "switch_body" | "_case_label" | "case_selectors" | "case_compound_statement" | "fallthrough_statement" | "loop_statement" | "for_statement" | "for_header" | "while_statement" | "break_statement" | "break_if_statement" | "continue_statement" | "continuing_statement" | "continuing_compound_statement" | "return_statement" | "discard_statement" | "variable_statement" | "variable_declaration" | "variable_qualifier" | "variable_identifier_declaration" | "increment_statement" | "decrement_statement" | "_expression" | "const_literal" | "int_literal" | "float_literal" | "bool_literal" | "parenthesized_expression" | "value_constructor" | "type_constructor_or_function_call_expression" | "builtin_type" | "composite_type" | "type_declaration" | "_vec_prefix" | "_mat_prefix" | "_abstract_type" | "texel_format" | "address_space" | "access_mode" | "argument_list_expression" | "bitcast_expression" | "binary_expression" | "unary_expression" | "postfix_expression" | "subscript_expression" | "lhs_expression" | "composite_value_decomposition_expression">} $
+ * @param {RuleOrLiteral} type
+ * @param {ChoiceRule} allowed_type_params
+ */
 function withTypeParameter($, type, allowed_type_params) {
   const type_param = allowed_type_params ?? $.type_declaration
   return seq(type, "<", type_param, ">");
 }
 
+/**
+ * @param {string[][]} lists
+ */
 function cartesianProduct(...lists) {
   return lists.reduce((as, bs) => as.flatMap(a => bs.map(b => [a, b].flat())))
 }
